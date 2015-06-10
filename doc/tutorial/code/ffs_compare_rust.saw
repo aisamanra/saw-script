@@ -1,0 +1,18 @@
+c <- llvm_load_module "ffs.bc";
+c_ffs_ref <- llvm_extract c "ffs_ref" llvm_pure;
+
+rust <- llvm_load_module "ffs_rust.bc";
+rust_ffs_ref <- llvm_extract rust "ffs_ref" llvm_pure;
+rust_ffs_imp <- llvm_extract rust "ffs_imp" llvm_pure;
+
+print "c ref <-> rust ref";
+let thm1 = {{ \x -> c_ffs_ref x == rust_ffs_ref x }};
+prove_print abc thm1;
+
+print "c ref <-> rust imp";
+let thm2 = {{ \x -> c_ffs_ref x == rust_ffs_imp x }};
+prove_print abc thm2;
+
+print "rust ref <-> rust imp";
+let thm3 = {{ \x -> rust_ffs_ref x == rust_ffs_imp x }};
+prove_print abc thm3;
